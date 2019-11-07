@@ -3,12 +3,12 @@
 // Copyright (c) 2019 taimiso0319. All rights reserved.
 //
 
-package main
+package collect
 
 import (
-	"github.com/taimiso0319/unity-shader-explorer/collect"
+	"fmt"
 )
 
-func main() {
-	collect.Test()
+func Test() {
+	fmt.Print("test")
 }
