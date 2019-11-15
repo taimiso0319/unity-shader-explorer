@@ -6,11 +6,11 @@
 package main
 
 import (
-	"os"
-	//"flag"
 	"flag"
 	"fmt"
+	"os"
 
+	"github.com/taimiso0319/unity-shader-explorer/analyze"
 	"github.com/taimiso0319/unity-shader-explorer/collect"
 )
 
@@ -33,7 +33,7 @@ func main() {
 	// End setting flags
 
 	if len(os.Args) <= 1 {
-		fmt.Println("You have to set the path start walk from.")
+		fmt.Println("You have to set the path walk from.")
 		return
 	}
 	if _, err := os.Stat(os.Args[1]); os.IsNotExist(err) {
@@ -42,8 +42,9 @@ func main() {
 		return
 	}
 
-	fmt.Println(limit)
 	collect.SetDepthLimit(limit)
-
-	collect.WalkPath(os.Args[1])
+	var shaderPaths []string = collect.GetShaderPaths(os.Args[1])
+	for _, line := range analyze.GetShaderDetails(shaderPaths) {
+		fmt.Println(line)
+	}
 }

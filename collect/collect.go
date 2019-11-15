@@ -10,24 +10,19 @@ import (
 	"io/ioutil"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 var depthLimit int = 5
 var currentDepth int = 0
 
-// Test shows useless words as a first step.
-func Test() {
-	fmt.Print("test")
-}
-
-// WalkPath explorer directries recusively from the root path.
-func WalkPath(root string) {
+// GetShaderPaths explorer shaders from the root path recusively.
+func GetShaderPaths(root string) []string {
 	var paths []string = dirwalk(root)
-	fmt.Println(paths)
-	fmt.Println(len(paths))
+	return filterShaderPaths(paths)
 }
 
-// SetDepthLimit changes the limit of directries the WalkPath explorers.
+// SetDepthLimit changes the limit of directries the GetShaders explorers.
 func SetDepthLimit(depth int) {
 	depthLimit = depth
 }
@@ -54,4 +49,14 @@ func dirwalk(dir string) []string {
 	}
 
 	return paths
+}
+
+func filterShaderPaths(paths []string) []string {
+	var retPaths []string
+	for _, p := range paths {
+		if strings.HasSuffix(p, ".shader") {
+			retPaths = append(retPaths, p)
+		}
+	}
+	return retPaths
 }
