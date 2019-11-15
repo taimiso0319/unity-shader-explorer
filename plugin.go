@@ -1,4 +1,4 @@
-package shader_explorer
+package shdrexpl
 
 import (
 	flutter "github.com/go-flutter-desktop/go-flutter"
