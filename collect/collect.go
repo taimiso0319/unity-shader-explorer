@@ -38,7 +38,7 @@ func dirwalk(dir string) []string {
 		if file.IsDir() {
 			currentDepth++
 			if currentDepth > depthLimit {
-				fmt.Println("Too deep. To avoid this error if necessarily, please run the change limit method first.")
+				fmt.Println("Too deep. To avoid this error if it is necessarily, please run the change limit method first.")
 				os.Exit(0) // I think I should change exit code to notice what happends.
 			}
 			paths = append(paths, dirwalk(filepath.Join(dir, file.Name()))...)
