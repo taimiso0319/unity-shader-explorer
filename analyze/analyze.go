@@ -2,6 +2,7 @@ package analyze
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"strings"
@@ -16,6 +17,14 @@ func GetShaderDetails(paths []string) map[int]map[string]string {
 	}
 
 	return details
+}
+
+func ConvertToJson(datas map[int]map[string]string) string {
+	jsonString, err := json.Marshal(datas)
+	if err != nil {
+		fmt.Println(err)
+	}
+	return string(jsonString)
 }
 
 func analyze(path string) map[string]string {

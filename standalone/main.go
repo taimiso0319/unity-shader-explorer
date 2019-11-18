@@ -11,6 +11,7 @@ import (
 	"os"
 
 	"github.com/taimiso0319/unity-shader-explorer/analyze"
+
 	"github.com/taimiso0319/unity-shader-explorer/collect"
 )
 
@@ -44,7 +45,9 @@ func main() {
 
 	collect.SetDepthLimit(limit)
 	var shaderPaths []string = collect.GetShaderPaths(os.Args[1])
-	for _, line := range analyze.GetShaderDetails(shaderPaths) {
-		fmt.Println(line)
-	}
+	shaders := analyze.ConvertToJson(analyze.GetShaderDetails(shaderPaths))
+	fmt.Println(shaders)
+	//for _, line := range analyze.GetShaderDetails(shaderPaths) {
+	//	fmt.Println(line)
+	//}
 }
