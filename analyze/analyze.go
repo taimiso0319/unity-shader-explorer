@@ -8,7 +8,7 @@ import (
 )
 
 func GetShaderDetails(paths []string) map[int]map[string]string {
-	var details = make(map[int]map[string]string)
+	details := make(map[int]map[string]string)
 
 	for index, p := range paths {
 		details[index] = make(map[string]string)
@@ -19,14 +19,14 @@ func GetShaderDetails(paths []string) map[int]map[string]string {
 }
 
 func analyze(path string) map[string]string {
-	var detail = make(map[string]string)
+	detail := make(map[string]string)
 	f, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
 	}
 	defer f.Close()
 	//var passCount int = 0
-
+	//foundShaderName := false
 	// Initialize mapped params
 	detail["path"] = path
 	detail["renderers"] = "all"
@@ -35,8 +35,9 @@ func analyze(path string) map[string]string {
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
-		var line string = string(scanner.Text())
+		line := string(scanner.Text())
 		line = strings.TrimSpace(line)
+		line = strings.Trim(line, string([]byte{239, 187, 191}))
 		//fmt.Println(strings.Index(line, "Shader"))
 		//fmt.Println(len(line))
 		if strings.HasPrefix(line, "//") {
