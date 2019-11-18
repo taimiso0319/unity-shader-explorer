@@ -17,8 +17,8 @@ var _ flutter.Plugin = &UnityShaderExplorerPlugin{} // compile-time type check
 // InitPlugin initializes the plugin.
 func (p *UnityShaderExplorerPlugin) InitPlugin(messenger plugin.BinaryMessenger) error {
 	channel := plugin.NewMethodChannel(messenger, channelName, plugin.StandardMethodCodec{})
-	channel.HandleFunc("getPlatformVersion", p.handlePlatformVersion)
 	channel.HandleFunc("getShaders", p.handleCollectShader)
+	channel.HandleFunc("getPlatformVersion", p.handlePlatformVersion)
 	return nil
 }
 
@@ -26,7 +26,7 @@ func (p *UnityShaderExplorerPlugin) handlePlatformVersion(arguments interface{})
 	return "go-flutter " + flutter.PlatformVersion, nil
 }
 
-func (p *UnityShaderExplorerPlugin) handleCollectShader(path string) (reply interface{}, err error) {
-	var shaderPaths []string = collect.GetShaderPaths(path)
-	return analyze.GetShaderDetails(shaderPaths)
+func (p *UnityShaderExplorerPlugin) handleCollectShader(argments interface{}) (reply interface{}, err error) {
+	var shaderPaths []string = collect.GetShaderPaths("")
+	return analyze.ConvertToJson(analyze.GetShaderDetails(shaderPaths)), nil
 }
