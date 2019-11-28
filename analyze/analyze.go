@@ -8,18 +8,18 @@ import (
 	"strings"
 )
 
-func GetShaderDetails(paths []string) map[int]map[string]string {
-	details := make(map[int]map[string]string)
+func GetShaderDetails(paths []string) []map[string]interface{} {
+	details := make([]map[string]interface{}, len(paths))
 
 	for index, p := range paths {
-		details[index] = make(map[string]string)
+		details[index] = make(map[string]interface{})
 		details[index] = analyze(p)
 	}
 
 	return details
 }
 
-func ConvertToJson(datas map[int]map[string]string) string {
+func ConvertToJson(datas []map[string]interface{}) string {
 	jsonString, err := json.Marshal(datas)
 	if err != nil {
 		fmt.Println(err)
@@ -27,8 +27,8 @@ func ConvertToJson(datas map[int]map[string]string) string {
 	return string(jsonString)
 }
 
-func analyze(path string) map[string]string {
-	detail := make(map[string]string)
+func analyze(path string) map[string]interface{} {
+	detail := make(map[string]interface{})
 	f, err := os.Open(path)
 	if err != nil {
 		fmt.Println(err)
@@ -39,7 +39,7 @@ func analyze(path string) map[string]string {
 	// Initialize mapped params
 	detail["path"] = path
 	detail["renderers"] = "all"
-	detail["isSurface"] = "false"
+	detail["isSurface"] = false
 	//detail["isMultiPass"] = "false"
 
 	scanner := bufio.NewScanner(f)
@@ -62,7 +62,7 @@ func analyze(path string) map[string]string {
 		}
 		if strings.HasPrefix(line, "#pragma") {
 			if strings.Contains(line, "surface") {
-				detail["isSurface"] = "true"
+				detail["isSurface"] = true
 			}
 
 			if strings.Contains(line, "only_renderers") {

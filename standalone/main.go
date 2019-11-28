@@ -19,10 +19,12 @@ func main() {
 	// Start setting flags
 	var (
 		limit int
+		json  bool
 	)
 
 	f := flag.NewFlagSet(os.Args[0], flag.ExitOnError)
 	f.IntVar(&limit, "limit", 5, "Max depth for limit explorering.")
+	f.BoolVar(&json, "json", false, "Print as Json.")
 	f.Parse(os.Args[1:])
 	for 0 < f.NArg() {
 		f.Parse(f.Args()[1:])
@@ -45,9 +47,12 @@ func main() {
 
 	collect.SetDepthLimit(limit)
 	var shaderPaths []string = collect.GetShaderPaths(os.Args[1])
-	shaders := analyze.ConvertToJson(analyze.GetShaderDetails(shaderPaths))
-	fmt.Println(shaders)
-	//for _, line := range analyze.GetShaderDetails(shaderPaths) {
-	//	fmt.Println(line)
-	//}
+	if json {
+		shaders := analyze.ConvertToJson(analyze.GetShaderDetails(shaderPaths))
+		fmt.Println(shaders)
+	} else {
+		for _, line := range analyze.GetShaderDetails(shaderPaths) {
+			fmt.Println(line)
+		}
+	}
 }
