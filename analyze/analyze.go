@@ -41,6 +41,7 @@ func analyze(path string) map[string]interface{} {
 	detail["renderers"] = "all"
 	detail["isSurface"] = false
 	//detail["isMultiPass"] = "false"
+	renderersVal := 16383
 
 	scanner := bufio.NewScanner(f)
 	for scanner.Scan() {
@@ -66,7 +67,14 @@ func analyze(path string) map[string]interface{} {
 			}
 
 			if strings.Contains(line, "only_renderers") {
-				detail["renderers"] = line[strings.LastIndex(line, "only_renderers")+15:]
+				renderersString := line[strings.LastIndex(line, "only_renderers")+15:]
+				tempRenderersVal := calcRenderers(renderersString)
+				if renderersVal != tempRenderersVal {
+					if tempRenderersVal < renderersVal {
+						detail["renderers"] = renderersString
+						renderersVal = tempRenderersVal
+					}
+				}
 			}
 		}
 		//if strings.HasPrefix(line, "Pass") {
@@ -77,4 +85,73 @@ func analyze(path string) map[string]interface{} {
 	//	detail["isMultiPass"] = "true"
 	//}
 	return detail
+}
+
+const (
+	ord3d9    = 1 << iota // 1 	// Direct3D 9
+	ord3d119x             // 2 	// Direct3D 11 9.x
+	ord3d11               // 4 	// Direct3D 11/12
+	orglcore              // 8 	// OpenGL 3.x / 4.x
+	orgles                // 16 	// OpenGL ES 2.0
+	orgles3               // 32 	// OpenGL ES 3.0
+	ormetal               // 64 	// iOS/Mac Metal
+	orvulkan              // 128 	// Vulkan
+	orxbox360             // 256 	// Xbox 360
+	orxboxone             // 512 	// xbox One
+	orps4                 // 1024 // PlayStation 4
+	orpsp2                // 2048 // PlayStation Vita
+	orn3ds                // 4096 // Nintendo 3DS
+	orwiiu                // 8192 // Nintendo Wii U
+)
+
+func calcRenderers(renderers string) int {
+	val := 0
+	if strings.Contains(renderers, "d3d9") {
+		val += ord3d9
+	}
+	d3d11num := strings.Count(renderers, "d3d11")
+	if d3d11num == 1 {
+		if strings.Contains(renderers, "d3d11_9x") {
+			val += ord3d119x
+		} else {
+			val += ord3d11
+		}
+	} else if d3d11num == 2 {
+		val += ord3d11
+		val += ord3d119x
+	}
+	if strings.Contains(renderers, "glcore") {
+		val += orglcore
+	}
+	if strings.Contains(renderers, "gles") {
+		val += orgles
+	}
+	if strings.Contains(renderers, "gles3") {
+		val += orgles3
+	}
+	if strings.Contains(renderers, "metal") {
+		val += ormetal
+	}
+	if strings.Contains(renderers, "vulkan") {
+		val += orvulkan
+	}
+	if strings.Contains(renderers, "xbox360") {
+		val += orxbox360
+	}
+	if strings.Contains(renderers, "xboxone") {
+		val += orxboxone
+	}
+	if strings.Contains(renderers, "ps4") {
+		val += orps4
+	}
+	if strings.Contains(renderers, "psp2") {
+		val += orpsp2
+	}
+	if strings.Contains(renderers, "n3ds") {
+		val += orn3ds
+	}
+	if strings.Contains(renderers, "wiiu") {
+		val += orwiiu
+	}
+	return val
 }
